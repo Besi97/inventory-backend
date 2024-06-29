@@ -6,24 +6,27 @@ plugins {
     kotlin("jvm") version "2.0.0"
     kotlin("plugin.spring") version "1.9.22"
     kotlin("plugin.jpa") version "1.9.22"
+    `maven-publish`
 }
 
 group = "dev.besi.inventory"
 version = "0.0.1-beta"
 
+fun gitlabRegistry(repositoryHandler: RepositoryHandler): MavenArtifactRepository = repositoryHandler.maven {
+    url = URI(
+        "https://${
+            providers.gradleProperty("gitlab.domain").getOrElse(System.getenv("GITLAB_DOMAIN"))
+        }/api/v4/projects/3/packages/maven"
+    )
+    credentials {
+        username = providers.gradleProperty("gitlab.auth.username").getOrElse(System.getenv("GITLAB_USERNAME"))
+        password = providers.gradleProperty("gitlab.auth.pat").getOrElse(System.getenv("GITLAB_PAT"))
+    }
+}
+
 repositories {
     mavenCentral()
-    maven {
-        url = URI(
-            "https://${
-                providers.gradleProperty("gitlab.domain").getOrElse(System.getenv("GITLAB_DOMAIN"))
-            }/api/v4/projects/3/packages/maven"
-        )
-        credentials {
-            username = providers.gradleProperty("gitlab.auth.username").getOrElse(System.getenv("GITLAB_USERNAME"))
-            password = providers.gradleProperty("gitlab.auth.pat").getOrElse(System.getenv("GITLAB_PAT"))
-        }
-    }
+    gitlabRegistry(this)
 }
 
 val springBootVersion = "3.3.0"
@@ -64,4 +67,15 @@ kotlin {
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }
     jvmToolchain(21)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("inventory-backend") {
+            artifact(tasks.bootJar)
+        }
+    }
+    repositories {
+        gitlabRegistry(this)
+    }
 }
