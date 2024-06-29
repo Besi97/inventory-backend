@@ -11,6 +11,9 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
+      - name: Get JAVA version
+        run: javac -version
+        
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
