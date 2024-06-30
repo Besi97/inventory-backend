@@ -25,3 +25,13 @@ jobs:
           GITLAB_DOMAIN: ${{ secrets.GITLAB_DOMAIN }}
           GITLAB_USERNAME: ${{ secrets.GITLAB_PUBLISH_USERNAME }}
           GITLAB_PAT: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
+
+      - name: Trigger GitLab deploy job
+        uses: digital-blueprint/gitlab-pipeline-trigger-action@v1.2.0
+        with:
+          host: ${{ secrets.GITLAB_DOMAIN }}
+          trigger_token: ${{ secrets.GITLAB_DEPLOY_JOB_TRIGGER }}
+          access_token: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
+          id: '3'
+          ref: 'main'
+          variables: '{"INVENTORY_BACKEND_VERSION":"0.0.1-beta"}'
