@@ -1,4 +1,4 @@
-name: Publish Spring Boot JAR
+name: Publish Spring Boot JAR and Docker image
 
 on:
   push:
@@ -25,6 +25,28 @@ jobs:
           GITLAB_DOMAIN: ${{ secrets.GITLAB_DOMAIN }}
           GITLAB_USERNAME: ${{ secrets.GITLAB_PUBLISH_USERNAME }}
           GITLAB_PAT: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
+
+      - name: Log in to Gitlab Docker registry
+        uses: docker/login-action@v3
+        with:
+          registry: docker${{ secrets.GITLAB_DOMAIN }}
+          username: ${{ secrets.GITLAB_PUBLISH_USERNAME }}
+          password: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: docker${{ secrets.GITLAB_DOMAIN }}/inventory-backend
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Trigger GitLab deploy job
         uses: digital-blueprint/gitlab-pipeline-trigger-action@v1.2.0
