@@ -16,7 +16,7 @@ fun gitlabRegistry(repositoryHandler: RepositoryHandler): MavenArtifactRepositor
     url = URI(
         "https://${
             providers.gradleProperty("gitlab.domain").getOrElse(System.getenv("GITLAB_DOMAIN"))
-        }/api/v4/projects/3/packages/maven"
+        }/api/v4/projects/4/packages/maven"
     )
     credentials {
         username = providers.gradleProperty("gitlab.auth.username").getOrElse(System.getenv("GITLAB_USERNAME"))
