@@ -37,7 +37,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: docker${{ secrets.GITLAB_DOMAIN }}/inventory-backend
+          images: docker.${{ secrets.GITLAB_DOMAIN }}/inventory-backend
 
       - name: Build and push Docker image
         id: push
