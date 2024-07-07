@@ -56,3 +56,4 @@ jobs:
           access_token: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
           id: '4'
           ref: 'main'
+          variables: '{}'
