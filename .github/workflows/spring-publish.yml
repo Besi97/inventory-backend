@@ -54,6 +54,5 @@ jobs:
           host: ${{ secrets.GITLAB_DOMAIN }}
           trigger_token: ${{ secrets.GITLAB_DEPLOY_JOB_TRIGGER }}
           access_token: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
-          id: '3'
+          id: '4'
           ref: 'main'
-          variables: '{"INVENTORY_BACKEND_VERSION":"0.0.1-beta"}'
