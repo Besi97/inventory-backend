@@ -22,6 +22,10 @@ jobs:
 
       - name: Run Gradle build to produce Spring Boot JAR
         run: cd $GITHUB_WORKSPACE && ./gradlew bootJar --no-daemon
+        env:
+          GITLAB_DOMAIN: ${{ secrets.GITLAB_DOMAIN }}
+          GITLAB_USERNAME: ${{ secrets.GITLAB_PUBLISH_USERNAME }}
+          GITLAB_PAT: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
 
       - name: Log in to Gitlab Docker registry
         uses: docker/login-action@v3
