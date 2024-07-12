@@ -1,11 +1,13 @@
 import java.net.URI
 
 plugins {
+    java
     id("org.springframework.boot") version "3.3.0"
     id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version "2.0.0"
-    kotlin("plugin.spring") version "1.9.22"
-    kotlin("plugin.jpa") version "1.9.22"
+    kotlin("plugin.spring") version "2.0.0"
+    kotlin("plugin.jpa") version "2.0.0"
+    kotlin("kapt") version "2.0.0"
     `maven-publish`
 }
 
@@ -30,13 +32,18 @@ repositories {
 }
 
 val springBootVersion = "3.3.0"
+val mapStructVersion = "1.5.5.Final"
 
 dependencies {
     api("dev.besi.inventory.graphql:inventory-api-models-jvm:0.0.1-beta")
     implementation("org.springframework.boot:spring-boot-starter-graphql:$springBootVersion")
     implementation("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.4.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.mapstruct:mapstruct:$mapStructVersion")
+    kapt("org.mapstruct:mapstruct-processor:$mapStructVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
     testImplementation("org.springframework.graphql:spring-graphql-test:1.3.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
