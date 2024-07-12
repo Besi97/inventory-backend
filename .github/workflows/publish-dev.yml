@@ -1,0 +1,61 @@
+name: Build and deploy Spring Boot JAR and Docker image in DEV
+
+on:
+  push:
+    branches:
+      - "dev/**"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Run Gradle build to produce Spring Boot JAR
+        run: cd $GITHUB_WORKSPACE && ./gradlew bootJar --no-daemon
+
+      - name: Log in to Gitlab Docker registry
+        uses: docker/login-action@v3
+        with:
+          registry: docker.${{ secrets.GITLAB_DOMAIN }}
+          username: ${{ secrets.GITLAB_PUBLISH_USERNAME }}
+          password: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: docker.${{ secrets.GITLAB_DOMAIN }}/inventory/inventory-backend
+          tags: type=raw,value={{branch}}-{{sha}}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Trigger GitLab deploy job
+        uses: digital-blueprint/gitlab-pipeline-trigger-action@v1.2.0
+        with:
+          host: ${{ secrets.GITLAB_DOMAIN }}
+          trigger_token: ${{ secrets.GITLAB_DEPLOY_JOB_TRIGGER }}
+          access_token: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
+          id: '4'
+          ref: 'main'
+          variables: |
+            {
+              "DEPLOYMENT_ENVIRONMENT": "DEV",
+              "IMAGE_VERSION": "${{ steps.meta.outputs.tags }}"
+            }
