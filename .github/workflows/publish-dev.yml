@@ -3,7 +3,7 @@ name: Build and deploy Spring Boot JAR and Docker image in DEV
 on:
   push:
     branches:
-      - "dev/**"
+      - "dev"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -39,7 +39,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: docker.${{ secrets.GITLAB_DOMAIN }}/inventory/inventory-backend
-          tags: type=raw,value={{branch}}-{{sha}}
+          tags: type=raw,value=dev-{{sha}}
 
       - name: Build and push Docker image
         id: push
