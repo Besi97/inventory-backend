@@ -1,0 +1,9 @@
+spring:
+  graphql:
+    graphiql:
+      enabled: true
+    cors:
+      allowed-origins:
+        - http://localhost:3000
+      allowed-methods: *
+      allowed-headers: *
