@@ -5,5 +5,5 @@ spring:
     cors:
       allowed-origins:
         - http://localhost:3000
-      allowed-methods: *
-      allowed-headers: *
+      allowed-methods: "*"
+      allowed-headers: "*"
