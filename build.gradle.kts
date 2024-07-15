@@ -61,6 +61,12 @@ tasks.create<Copy>("copyGraphQLSchema") {
     into(layout.projectDirectory.dir("src/main/resources/graphql"))
 }
 
+tasks.create("projectVersion") {
+    doLast {
+        println(version)
+    }
+}
+
 tasks.named("processResources") {
     dependsOn("copyGraphQLSchema")
 }
