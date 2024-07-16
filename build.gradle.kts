@@ -35,7 +35,7 @@ val springBootVersion = "3.3.0"
 val mapStructVersion = "1.5.5.Final"
 
 dependencies {
-    api("dev.besi.inventory.graphql:inventory-api-models-jvm:0.0.1-beta")
+    api("dev.besi.inventory.graphql:inventory-api-models-jvm:0.0.2")
     implementation("org.springframework.boot:spring-boot-starter-graphql:$springBootVersion")
     implementation("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
