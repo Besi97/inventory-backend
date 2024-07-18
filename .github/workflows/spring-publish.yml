@@ -2,7 +2,8 @@ name: Publish Spring Boot JAR and Docker image
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -19,12 +20,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - name: Run Gradle build and publish
-        run: cd $GITHUB_WORKSPACE && ./gradlew publish --no-daemon
+      - name: Run Gradle build to produce Spring Boot JAR
+        run: cd $GITHUB_WORKSPACE && ./gradlew bootJar --no-daemon
         env:
           GITLAB_DOMAIN: ${{ secrets.GITLAB_DOMAIN }}
           GITLAB_USERNAME: ${{ secrets.GITLAB_PUBLISH_USERNAME }}
           GITLAB_PAT: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
+
+      - name: Get project version
+        id: get-version
+        run: cd $GITHUB_WORKSPACE && echo "VERSION=$(./gradlew projectVersion -q --no-daemon)" >> "$GITHUB_OUTPUT"
 
       - name: Log in to Gitlab Docker registry
         uses: docker/login-action@v3
@@ -38,10 +43,11 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: docker.${{ secrets.GITLAB_DOMAIN }}/inventory/inventory-backend
+          tags: ${{ steps.get-version.outputs.VERSION }}
 
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -56,4 +62,8 @@ jobs:
           access_token: ${{ secrets.GITLAB_PUBLISH_PASSWORD }}
           id: '4'
           ref: 'main'
-          variables: '{}'
+          variables: |
+            {
+              "DEPLOYMENT_ENVIRONMENT": "PROD",
+              "IMAGE_VERSION": "${{ steps.meta.outputs.tags }}"
+            }
