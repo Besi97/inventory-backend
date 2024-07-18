@@ -1,0 +1,7 @@
+inventory:
+  config:
+    baseDir: '/home/besi/inventory'
+spring:
+  graphql:
+    graphiql:
+      enabled: true
