@@ -9,7 +9,7 @@ import org.springframework.graphql.execution.ErrorType
 import org.springframework.stereotype.Component
 
 @Component
-class EntityNotFoundExceptionHandler: DataFetcherExceptionResolverAdapter() {
+class EntityNotFoundExceptionHandler : DataFetcherExceptionResolverAdapter() {
     override fun resolveToSingleError(ex: Throwable, env: DataFetchingEnvironment): GraphQLError? =
         if (ex is EntityNotFoundException)
             GraphqlErrorBuilder.newError(env)
