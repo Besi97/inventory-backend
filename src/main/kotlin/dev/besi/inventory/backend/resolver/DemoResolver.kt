@@ -8,7 +8,6 @@ import dev.besi.inventory.graphql.api.UpdateProductMutationResolver
 import dev.besi.inventory.graphql.model.Product
 import dev.besi.inventory.graphql.model.ProductMutation
 import jakarta.persistence.EntityNotFoundException
-import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 import java.math.BigDecimal
 
@@ -16,8 +15,7 @@ import java.math.BigDecimal
 class DemoResolver(
     val productRepository: ProductRepository,
     val productMapper: ProductMapper
-): ProductsQueryResolver, CreateProductMutationResolver, UpdateProductMutationResolver {
-    @QueryMapping
+) : ProductsQueryResolver, CreateProductMutationResolver, UpdateProductMutationResolver {
     override fun products(): List<Product> =
         productMapper.map(productRepository.findAll().toList())
 
