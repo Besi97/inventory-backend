@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource
 import javax.sql.DataSource
 
 @Configuration
-@PropertySource("file:/etc/inventory/db-secret/.db.properties")
+@PropertySource("file:\${inventory.config.baseDir:/etc/inventory}/db-secret/.db.properties")
 class MariaDbConfiguration {
     @Bean
     fun dataSource(
