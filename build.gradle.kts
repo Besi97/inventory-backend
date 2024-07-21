@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "dev.besi.inventory"
-version = "0.0.2"
+version = "0.0.3"
 
 fun gitlabRegistry(repositoryHandler: RepositoryHandler): MavenArtifactRepository = repositoryHandler.maven {
     url = URI(
